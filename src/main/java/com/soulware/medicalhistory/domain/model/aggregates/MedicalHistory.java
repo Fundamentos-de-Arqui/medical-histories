@@ -19,9 +19,8 @@ public class MedicalHistory {
     @Column(name = "medical_history_id")
     private int id;
 
-    @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "patient_id", nullable = false))
-    private PatientId patientId;
+    @Column(name = "patient_id", nullable = false)
+    private int patientId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "status_id")
@@ -39,7 +38,7 @@ public class MedicalHistory {
     protected MedicalHistory() {}
 
     public MedicalHistory(PatientId patientId, MedicalHistoryStatus status) {
-        this.patientId = patientId;
+        this.patientId = patientId.value();
         this.status = status;
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
@@ -60,7 +59,7 @@ public class MedicalHistory {
         return id;
     }
 
-    public PatientId getPatientId() {
+    public int getPatientId() {
         return patientId;
     }
 

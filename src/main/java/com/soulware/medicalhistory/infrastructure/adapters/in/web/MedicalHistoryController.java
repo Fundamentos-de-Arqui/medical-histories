@@ -63,4 +63,15 @@ public class MedicalHistoryController {
 
     }
 
+    @GET
+    @Path("/patient/{patient-id}")
+    public Response getMedicalHistoryByPatient(@PathParam("patient-id") int patientId) {
+        assert getMedicalHistoryUseCase != null;
+        MedicalHistory history = getMedicalHistoryUseCase.getByPatientId(new PatientId(patientId));
+        MedicalHistoryResponse response = MedicalHistoryResourceAssembler.toResource(history);
+        return Response.status(Response.Status.OK).entity(response).build();
+
+
+    }
+
 }

@@ -40,9 +40,14 @@ public class JpaMedicalHistoryRepository implements MedicalHistoryRepository {
 
     @Override
     public Optional<MedicalHistory> findByPatientId(PatientId patientId) {
-        return em.createQuery("SELECT m FROM MedicalHistory m WHERE m.patientId = :pid", MedicalHistory.class)
+        return em.createQuery(
+                        "SELECT m FROM MedicalHistory m JOIN FETCH m.status WHERE m.patientId = :pid",
+                        MedicalHistory.class
+                )
                 .setParameter("pid", patientId.value())
                 .getResultStream()
                 .findFirst();
     }
+
+
 }

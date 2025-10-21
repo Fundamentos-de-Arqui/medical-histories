@@ -27,13 +27,13 @@ public class GetMedicalHistoryService implements GetMedicalHistoryUseCase {
     @Override
     @Transactional
     public MedicalHistory getById(MedicalHistoryId id) {
-
         return medicalHistoryRepository.findById(id).orElseThrow(()-> new RuntimeException("Medical history not found"));
     }
 
     @Override
+    @Transactional
     public MedicalHistory getByPatientId(PatientId patientId) {
-        return null;
+        return medicalHistoryRepository.findByPatientId(patientId).orElseThrow(()-> new RuntimeException("Medical history not found"));
     }
 
 

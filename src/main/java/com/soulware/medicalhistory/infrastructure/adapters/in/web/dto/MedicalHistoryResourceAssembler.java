@@ -7,7 +7,7 @@ public class MedicalHistoryResourceAssembler {
     public static MedicalHistoryResponse toResource(MedicalHistory history) {
         return new MedicalHistoryResponse(
                 history.getId(),
-                history.getPatientId().value(),
+                history.getPatientId(),
                 history.getStatus().getName(),
                 history.getCreatedAt(),
                 history.getUpdatedAt()
