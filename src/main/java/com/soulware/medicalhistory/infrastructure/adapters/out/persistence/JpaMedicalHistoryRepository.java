@@ -18,7 +18,7 @@ public class JpaMedicalHistoryRepository implements MedicalHistoryRepository {
 
     @Override
     public void save(MedicalHistory medicalHistory) {
-        if (medicalHistory.getId() == null) {
+        if (medicalHistory.getId() == 0) {
             em.persist(medicalHistory);
         } else {
             em.merge(medicalHistory);

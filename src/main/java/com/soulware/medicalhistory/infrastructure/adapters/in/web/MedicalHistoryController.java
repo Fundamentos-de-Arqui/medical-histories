@@ -33,6 +33,7 @@ public class MedicalHistoryController {
 
     @POST
     public Response createMedicalHistory(CreateMedicalHistoryRequest request) {
+        assert createMedicalHistoryUseCase != null;
         MedicalHistory history = createMedicalHistoryUseCase.create(new PatientId(request.patientId()));
         MedicalHistoryResponse response = MedicalHistoryResourceAssembler.toResource(history);
         return Response.status(Response.Status.CREATED).entity(response).build();

@@ -14,9 +14,10 @@ import java.util.List;
 @Table(name = "medical_histories")
 public class MedicalHistory {
 
-    @EmbeddedId
-    @AttributeOverride(name = "value", column = @Column(name = "medical_history_id"))
-    private MedicalHistoryId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "medical_history_id")
+    private int id;
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "patient_id", nullable = false))
@@ -55,7 +56,7 @@ public class MedicalHistory {
         this.updatedAt = Instant.now();
     }
 
-    public MedicalHistoryId getId() {
+    public int getId() {
         return id;
     }
 

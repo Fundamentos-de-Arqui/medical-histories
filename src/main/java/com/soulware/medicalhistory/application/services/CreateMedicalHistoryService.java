@@ -8,6 +8,7 @@ import com.soulware.medicalhistory.domain.model.entities.MedicalHistoryStatus;
 import com.soulware.medicalhistory.domain.model.valueobjects.PatientId;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 public class CreateMedicalHistoryService implements CreateMedicalHistoryUseCase {
@@ -23,6 +24,7 @@ public class CreateMedicalHistoryService implements CreateMedicalHistoryUseCase 
     }
 
     @Override
+    @Transactional
     public MedicalHistory create(PatientId patientId) {
         MedicalHistoryStatus activeStatus = statusRepository
                 .findByName("ACTIVE")

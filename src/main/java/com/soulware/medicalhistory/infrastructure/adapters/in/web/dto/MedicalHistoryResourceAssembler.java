@@ -6,11 +6,11 @@ public class MedicalHistoryResourceAssembler {
 
     public static MedicalHistoryResponse toResource(MedicalHistory history) {
         return new MedicalHistoryResponse(
-                history.getId().value(),
+                history.getId(),
                 history.getPatientId().value(),
                 history.getStatus().getName(),
-                history.getCreatedAt().toString(),
-                history.getUpdatedAt().toString()
+                history.getCreatedAt(),
+                history.getUpdatedAt()
         );
     }
 }

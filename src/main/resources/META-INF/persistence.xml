@@ -6,7 +6,8 @@
 
     <persistence-unit name="default" transaction-type="JTA">
 
-        <jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source>
+        <jta-data-source>java:jboss/datasources/MedicalHistories</jta-data-source>
+
 
 
         <class>com.soulware.medicalhistory.domain.model.aggregates.MedicalHistory</class>
@@ -14,10 +15,14 @@
         <class>com.soulware.medicalhistory.domain.model.entities.MedicalHistoryStatus</class>
 
         <properties>
-
+            <!-- Hibernate/JPA -->
             <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
+            <property name="jakarta.persistence.jdbc.url"
+                      value="jdbc:mysql://localhost:3306/medical-histories?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC"/>
+
         </properties>
     </persistence-unit>
 
