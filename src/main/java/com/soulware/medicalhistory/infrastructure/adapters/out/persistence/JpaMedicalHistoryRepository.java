@@ -7,6 +7,7 @@ import com.soulware.medicalhistory.domain.model.valueobjects.PatientId;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
 import java.util.Optional;
 
@@ -26,15 +27,27 @@ public class JpaMedicalHistoryRepository implements MedicalHistoryRepository {
     }
 
     @Override
+    @Transactional
     public Optional<MedicalHistory> findById(MedicalHistoryId id) {
-        return Optional.ofNullable(em.find(MedicalHistory.class, id));
+        return em.createQuery(
+                        "SELECT m FROM MedicalHistory m JOIN FETCH m.status WHERE m.id = :id",
+                        MedicalHistory.class
+                )
+                .setParameter("id", id.getValue())
+                .getResultStream()
+                .findFirst();
     }
 
     @Override
     public Optional<MedicalHistory> findByPatientId(PatientId patientId) {
-        return em.createQuery("SELECT m FROM MedicalHistory m WHERE m.patientId = :pid", MedicalHistory.class)
+        return em.createQuery(
+                        "SELECT m FROM MedicalHistory m JOIN FETCH m.status WHERE m.patientId = :pid",
+                        MedicalHistory.class
+                )
                 .setParameter("pid", patientId.value())
                 .getResultStream()
                 .findFirst();
     }
+
+
 }
