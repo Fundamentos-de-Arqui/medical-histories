@@ -2,7 +2,9 @@ package com.soulware.medicalhistory.infrastructure.adapters.in.web;
 
 
 import com.soulware.medicalhistory.application.ports.in.CreateMedicalHistoryUseCase;
+import com.soulware.medicalhistory.application.ports.in.GetMedicalHistoryUseCase;
 import com.soulware.medicalhistory.domain.model.aggregates.MedicalHistory;
+import com.soulware.medicalhistory.domain.model.valueobjects.MedicalHistoryId;
 import com.soulware.medicalhistory.domain.model.valueobjects.PatientId;
 import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.CreateMedicalHistoryRequest;
 import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.MedicalHistoryResourceAssembler;
@@ -13,6 +15,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.util.Optional;
 
 
 @Path("/medical-histories")
@@ -22,13 +25,17 @@ import jakarta.ws.rs.core.Response;
 public class MedicalHistoryController {
 
     private final CreateMedicalHistoryUseCase createMedicalHistoryUseCase;
+    private final GetMedicalHistoryUseCase getMedicalHistoryUseCase;
 
     public MedicalHistoryController() {
+        this.getMedicalHistoryUseCase = null;
         this.createMedicalHistoryUseCase = null;
     }
+
     @Inject
-    public MedicalHistoryController(CreateMedicalHistoryUseCase createMedicalHistoryUseCase) {
+    public MedicalHistoryController(CreateMedicalHistoryUseCase createMedicalHistoryUseCase, GetMedicalHistoryUseCase getMedicalHistoryUseCase) {
         this.createMedicalHistoryUseCase = createMedicalHistoryUseCase;
+        this.getMedicalHistoryUseCase = getMedicalHistoryUseCase;
     }
 
     @POST
@@ -44,4 +51,16 @@ public class MedicalHistoryController {
     public Response helloWorld() {
         return Response.ok("{\"message\":\"Hello World\"}").build();
     }
+
+    @GET
+    @Path("/{id}")
+    public Response getMedicalHistory(@PathParam("id") int id) {
+        assert getMedicalHistoryUseCase != null;
+        MedicalHistory history = getMedicalHistoryUseCase.getById(new MedicalHistoryId(id));
+        MedicalHistoryResponse response = MedicalHistoryResourceAssembler.toResource(history);
+
+        return Response.status(Response.Status.OK).entity(response).build();
+
+    }
+
 }
