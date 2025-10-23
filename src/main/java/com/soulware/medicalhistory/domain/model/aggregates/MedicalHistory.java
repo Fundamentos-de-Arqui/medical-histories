@@ -29,6 +29,9 @@ public class MedicalHistory {
     @OneToMany(mappedBy = "medicalHistory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Entry> entries = new ArrayList<>();
 
+    @OneToMany(mappedBy = "medicalHistory", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MedicalRecord> medicalRecords = new ArrayList<>();
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -46,6 +49,11 @@ public class MedicalHistory {
 
     public void addEntry(Entry entry) {
         entries.add(entry);
+        this.updatedAt = Instant.now();
+    }
+
+    public void addMedicalRecord(MedicalRecord record) {
+        medicalRecords.add(record);
         this.updatedAt = Instant.now();
     }
 
@@ -78,5 +86,10 @@ public class MedicalHistory {
     public Instant getUpdatedAt() {
         return updatedAt;
     }
+
+    public int getNextVersionNumber() {
+        return (medicalRecords == null ? 0 : medicalRecords.size()) + 1;
+    }
+
 }
 
