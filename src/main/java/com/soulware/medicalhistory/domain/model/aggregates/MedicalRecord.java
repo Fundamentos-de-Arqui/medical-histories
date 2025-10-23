@@ -1,5 +1,6 @@
 package com.soulware.medicalhistory.domain.model.aggregates;
 
+import com.soulware.medicalhistory.domain.model.entities.EvaluationRecord;
 import com.soulware.medicalhistory.domain.model.valueobjects.MedicalRecordId;
 import com.soulware.medicalhistory.domain.model.valueobjects.VersionNumber;
 import jakarta.persistence.*;
@@ -14,7 +15,6 @@ public class MedicalRecord {
     @Column(name = "medical_record_id")
     private int id;
 
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "version_number", nullable = false)
     private int versionNumber;
 
@@ -27,6 +27,11 @@ public class MedicalRecord {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "medical_history_id")
     private MedicalHistory medicalHistory;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "evaluation_record_id", referencedColumnName = "evaluation_record_id")
+    private EvaluationRecord evaluationRecord;
+
 
     protected MedicalRecord() {}
 
