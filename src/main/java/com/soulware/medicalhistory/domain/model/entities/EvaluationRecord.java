@@ -8,11 +8,11 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "evaluation_record")
+@Table(name = "assessment_record")
 public class EvaluationRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "evaluation_record_id")
+    @Column(name = "assessment_record_id")
     private int id;
 
     @Column(name = "diagnostic", nullable = false, length = 100)
@@ -40,7 +40,8 @@ public class EvaluationRecord {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @OneToOne(mappedBy = "evaluationRecord", fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "medical_record_id", referencedColumnName = "medical_record_id")
     private MedicalRecord medicalRecord;
 
 

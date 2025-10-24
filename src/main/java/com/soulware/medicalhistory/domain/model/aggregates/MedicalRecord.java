@@ -28,9 +28,8 @@ public class MedicalRecord {
     @JoinColumn(name = "medical_history_id")
     private MedicalHistory medicalHistory;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "evaluation_record_id", referencedColumnName = "evaluation_record_id")
-    private EvaluationRecord evaluationRecord;
+    @OneToOne(mappedBy = "medicalRecord", fetch = FetchType.LAZY)
+    private EvaluationRecord assessmentRecord;
 
 
     protected MedicalRecord() {}
@@ -56,7 +55,13 @@ public class MedicalRecord {
         return new MedicalRecordId(id);
     }
 
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
 
+    public MedicalHistory getMedicalHistory() {
+        return medicalHistory;
+    }
 
 
 }
