@@ -1,6 +1,6 @@
 package com.soulware.medicalhistory.domain.model.aggregates;
 
-import com.soulware.medicalhistory.domain.model.entities.EvaluationRecord;
+import com.soulware.medicalhistory.domain.model.entities.AssessmentRecord;
 import com.soulware.medicalhistory.domain.model.valueobjects.MedicalRecordId;
 import com.soulware.medicalhistory.domain.model.valueobjects.VersionNumber;
 import jakarta.persistence.*;
@@ -29,7 +29,7 @@ public class MedicalRecord {
     private MedicalHistory medicalHistory;
 
     @OneToOne(mappedBy = "medicalRecord", fetch = FetchType.LAZY)
-    private EvaluationRecord assessmentRecord;
+    private AssessmentRecord assessmentRecord;
 
 
     protected MedicalRecord() {}

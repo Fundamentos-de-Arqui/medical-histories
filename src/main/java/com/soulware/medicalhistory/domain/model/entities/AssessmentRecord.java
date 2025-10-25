@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "assessment_record")
-public class EvaluationRecord {
+public class AssessmentRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "assessment_record_id")
@@ -45,9 +45,9 @@ public class EvaluationRecord {
     private MedicalRecord medicalRecord;
 
 
-    protected EvaluationRecord() {}
+    protected AssessmentRecord() {}
 
-    public EvaluationRecord(Diagnostic diagnostic, Treatment treatment, Description description, TherapistId therapistId, AssessmentType assessmentType, ScheduledAt scheduledAt) {
+    public AssessmentRecord(Diagnostic diagnostic, Treatment treatment, Description description, TherapistId therapistId, AssessmentType assessmentType, ScheduledAt scheduledAt, MedicalRecord medicalRecord) {
         this.diagnostic = diagnostic.diagnostic();
         this.treatment = treatment.treatment();
         this.description = description.description();
@@ -56,10 +56,42 @@ public class EvaluationRecord {
         this.scheduledAt = scheduledAt.scheduledAt();
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
+        this.medicalRecord = medicalRecord;
     }
 
-    public EvaluationRecordId getId() {
-        return new EvaluationRecordId(id);
+    public AssessmentRecordId getId() {
+        return new AssessmentRecordId(id);
+    }
+
+    public Diagnostic getDiagnostic() {
+        return new Diagnostic(diagnostic);
+    }
+
+    public Treatment getTreatment() {
+        return new Treatment(treatment);
+    }
+    public Description getDescription() {
+        return new Description(description);
+
+    }
+    public TherapistId getTherapistId() {
+        return new TherapistId(therapistId);
+    }
+
+    public AssessmentType getAssessmentType() {
+        return assessmentType;
+    }
+
+    public ScheduledAt getScheduledAt() {
+        return new ScheduledAt(scheduledAt);
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
     }
 
 
