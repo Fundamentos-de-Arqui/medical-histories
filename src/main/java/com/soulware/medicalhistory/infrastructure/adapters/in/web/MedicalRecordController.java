@@ -1,11 +1,10 @@
 package com.soulware.medicalhistory.infrastructure.adapters.in.web;
 
 import com.soulware.medicalhistory.application.ports.in.CreateMedicalRecordUseCase;
+import com.soulware.medicalhistory.domain.commands.CreateMedicalRecordCommand;
 import com.soulware.medicalhistory.domain.model.aggregates.MedicalRecord;
 import com.soulware.medicalhistory.domain.model.valueobjects.MedicalHistoryId;
-import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.CreateMedicalRecordRequest;
-import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.MedicalRecordResourceAssembler;
-import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.MedicalRecordResponse;
+import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.*;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -30,11 +29,25 @@ public class MedicalRecordController {
 
     @POST
     public Response createMedicalRecord(CreateMedicalRecordRequest request) {
-        assert createMedicalRecordUseCase != null;
-        MedicalRecord medicalRecord = createMedicalRecordUseCase.create(new MedicalHistoryId(request.medicalHistoryId()));
-        MedicalRecordResponse medicalRecordResponse = MedicalRecordResourceAssembler.toResource(medicalRecord);
+        var command = new CreateMedicalRecordCommand(
+                request.medicalHistoryId(),
+                request.diagnostic(),
+                request.treatment(),
+                request.description(),
+                request.therapistId(),
+                request.assessmentType(),
+                request.scheduledAt()
+        );
 
-        return Response.status(Response.Status.CREATED).entity(medicalRecordResponse).build();
+        assert createMedicalRecordUseCase != null;
+        var result = createMedicalRecordUseCase.create(command);
+
+        var response = MedicalRecordResourceAssembler.toResource(
+                result.medicalRecord(),
+                result.assessmentRecord()
+        );
+
+        return Response.status(Response.Status.CREATED).entity(response).build();
 
     }
 
