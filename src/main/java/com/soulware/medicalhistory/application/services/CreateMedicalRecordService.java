@@ -1,11 +1,15 @@
 package com.soulware.medicalhistory.application.services;
 
 import com.soulware.medicalhistory.application.ports.in.CreateMedicalRecordUseCase;
+import com.soulware.medicalhistory.application.ports.out.AssessmentRecordRepository;
 import com.soulware.medicalhistory.application.ports.out.MedicalHistoryRepository;
 import com.soulware.medicalhistory.application.ports.out.MedicalRecordRepository;
+import com.soulware.medicalhistory.application.results.CreatedMedicalRecordResult;
+import com.soulware.medicalhistory.domain.commands.CreateMedicalRecordCommand;
 import com.soulware.medicalhistory.domain.model.aggregates.MedicalHistory;
 import com.soulware.medicalhistory.domain.model.aggregates.MedicalRecord;
-import com.soulware.medicalhistory.domain.model.valueobjects.MedicalHistoryId;
+import com.soulware.medicalhistory.domain.model.entities.AssessmentRecord;
+import com.soulware.medicalhistory.domain.model.valueobjects.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -15,21 +19,37 @@ public class CreateMedicalRecordService implements CreateMedicalRecordUseCase {
 
     private final MedicalHistoryRepository medicalHistoryRepository;
     private final MedicalRecordRepository medicalRecordRepository;
+    private final AssessmentRecordRepository assessmentRecordRepository;
 
     @Inject
-    public CreateMedicalRecordService(MedicalHistoryRepository medicalHistoryRepository, MedicalRecordRepository medicalRecordRepository) {
+    public CreateMedicalRecordService(MedicalHistoryRepository medicalHistoryRepository, MedicalRecordRepository medicalRecordRepository, AssessmentRecordRepository assessmentRecordRepository) {
         this.medicalHistoryRepository = medicalHistoryRepository;
         this.medicalRecordRepository = medicalRecordRepository;
+        this.assessmentRecordRepository = assessmentRecordRepository;
     }
 
     @Override
     @Transactional
-    public MedicalRecord create(MedicalHistoryId medicalHistory) {
-        MedicalHistory history = medicalHistoryRepository.findById(medicalHistory).orElseThrow(()-> new RuntimeException("Medical history not found"));
+    public CreatedMedicalRecordResult create(CreateMedicalRecordCommand command) {
+
+        var medicalHistoryId = new MedicalHistoryId(command.medicalHistoryId());
+        var diagnostic = new Diagnostic(command.diagnostic());
+        var treatment = new Treatment(command.treatment());
+        var description = new Description(command.description());
+        var therapistId = new TherapistId(command.therapistId());
+        var assessmentType = AssessmentType.valueOf(command.assessmentType());
+        var scheduledAt = new ScheduledAt(command.scheduledAt());
+
+        MedicalHistory history = medicalHistoryRepository.findById(medicalHistoryId).orElseThrow(()-> new RuntimeException("Medical history not found"));
 
         MedicalRecord medicalRecord = new MedicalRecord(history);
 
         medicalRecordRepository.save(medicalRecord);
-        return medicalRecord;
+
+        AssessmentRecord assessmentRecord = new AssessmentRecord(diagnostic ,treatment, description, therapistId, assessmentType, scheduledAt, medicalRecord);
+
+        assessmentRecordRepository.save(assessmentRecord);
+
+        return new CreatedMedicalRecordResult(medicalRecord, assessmentRecord);
     }
 }
