@@ -5,13 +5,13 @@ import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 
 @Embeddable
-public class MedicalHistoryId implements Serializable {
+public class ClinicalFolderId implements Serializable {
 
     private int value;
 
-    protected MedicalHistoryId() {}
+    protected ClinicalFolderId() {}
 
-    public MedicalHistoryId(int value) {
+    public ClinicalFolderId(int value) {
         this.value = value;
     }
 

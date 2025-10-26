@@ -1,15 +1,15 @@
 package com.soulware.medicalhistory.domain.model.entities;
 
-import com.soulware.medicalhistory.domain.model.valueobjects.MedicalHistoryStatusId;
+import com.soulware.medicalhistory.domain.model.valueobjects.ClinicalFolderStatusId;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "medical_histories_status")
-public class MedicalHistoryStatus {
+@Table(name = "clinical_folder_status")
+public class ClinicalFolderStatus {
 
     @EmbeddedId
-    @AttributeOverride(name = "value", column = @Column(name = "medical_history_status_id"))
-    private MedicalHistoryStatusId id;
+    @AttributeOverride(name = "value", column = @Column(name = "clinical_folder_status_id"))
+    private ClinicalFolderStatusId id;
 
     @Column(name = "name", nullable = false, length = 20)
     private String name;
@@ -17,15 +17,15 @@ public class MedicalHistoryStatus {
     @Column(name = "description", length = 60)
     private String description;
 
-    protected MedicalHistoryStatus() {}
+    protected ClinicalFolderStatus() {}
 
-    public MedicalHistoryStatus(MedicalHistoryStatusId id, String name, String description) {
+    public ClinicalFolderStatus(ClinicalFolderStatusId id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
     }
 
-    public MedicalHistoryStatusId getId() {
+    public ClinicalFolderStatusId getId() {
         return id;
     }
     public String getName() {

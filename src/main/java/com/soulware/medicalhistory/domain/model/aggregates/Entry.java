@@ -20,8 +20,8 @@ public class Entry {
     private Instant createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "medical_history_id")
-    private MedicalHistory medicalHistory;
+    @JoinColumn(name = "clinical_folder_id")
+    private ClinicalFolder clinicalFolder;
 
     public Entry(EntryId id, TherapistId therapistId, String content) {
         this.id = id;

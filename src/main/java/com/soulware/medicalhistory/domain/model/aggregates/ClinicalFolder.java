@@ -1,8 +1,7 @@
 package com.soulware.medicalhistory.domain.model.aggregates;
 
 
-import com.soulware.medicalhistory.domain.model.entities.MedicalHistoryStatus;
-import com.soulware.medicalhistory.domain.model.valueobjects.MedicalHistoryId;
+import com.soulware.medicalhistory.domain.model.entities.ClinicalFolderStatus;
 import com.soulware.medicalhistory.domain.model.valueobjects.PatientId;
 import jakarta.persistence.*;
 
@@ -11,24 +10,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "medical_histories")
-public class MedicalHistory {
+@Table(name = "clinical_folder")
+public class ClinicalFolder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "medical_history_id")
+    @Column(name = "clinical_folder_id")
     private int id;
 
-    @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "patient_id", nullable = false))
-    private PatientId patientId;
+    @Column(name = "patient_id", nullable = false)
+    private int patientId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "status_id")
-    private MedicalHistoryStatus status;
+    private ClinicalFolderStatus status;
 
-    @OneToMany(mappedBy = "medicalHistory", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "clinicalFolder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Entry> entries = new ArrayList<>();
+
+    @OneToMany(mappedBy = "clinicalFolder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("versionNumber DESC")
+    private List<MedicalRecord> medicalRecords = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -36,10 +38,10 @@ public class MedicalHistory {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    protected MedicalHistory() {}
+    protected ClinicalFolder() {}
 
-    public MedicalHistory(PatientId patientId, MedicalHistoryStatus status) {
-        this.patientId = patientId;
+    public ClinicalFolder(PatientId patientId, ClinicalFolderStatus status) {
+        this.patientId = patientId.value();
         this.status = status;
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
@@ -47,6 +49,11 @@ public class MedicalHistory {
 
     public void addEntry(Entry entry) {
         entries.add(entry);
+        this.updatedAt = Instant.now();
+    }
+
+    public void addMedicalRecord(MedicalRecord record) {
+        medicalRecords.add(record);
         this.updatedAt = Instant.now();
     }
 
@@ -60,16 +67,20 @@ public class MedicalHistory {
         return id;
     }
 
-    public PatientId getPatientId() {
+    public int getPatientId() {
         return patientId;
     }
 
-    public MedicalHistoryStatus getStatus() {
+    public ClinicalFolderStatus getStatus() {
         return status;
     }
 
     public List<Entry> getEntries() {
         return entries;
+    }
+
+    public List<MedicalRecord> getMedicalRecords() {
+        return medicalRecords;
     }
 
     public Instant getCreatedAt() {
@@ -79,5 +90,10 @@ public class MedicalHistory {
     public Instant getUpdatedAt() {
         return updatedAt;
     }
+
+    public int getNextVersionNumber() {
+        return (medicalRecords == null ? 0 : medicalRecords.size()) + 1;
+    }
+
 }
 
