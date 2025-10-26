@@ -22,24 +22,21 @@ import jakarta.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 public class ClinicalFolderController {
 
-    private final CreateClinicalFolderUseCase createClinicalFolderUseCase;
     private final GetClinicalFolderUseCase getClinicalFolderUseCase;
     private final GetMedicalRecordByPatientAndVersionNumberUseCase getMedicalRecordByPatientAndVersionNumberUseCase;
 
     public ClinicalFolderController( ) {
         this.getMedicalRecordByPatientAndVersionNumberUseCase = null;
         this.getClinicalFolderUseCase = null;
-        this.createClinicalFolderUseCase = null;
     }
 
     @Inject
     public ClinicalFolderController(CreateClinicalFolderUseCase createClinicalFolderUseCase, GetClinicalFolderUseCase getClinicalFolderUseCase, GetMedicalRecordByPatientAndVersionNumberUseCase getMedicalRecordByPatientAndVersionNumberUseCase) {
-        this.createClinicalFolderUseCase = createClinicalFolderUseCase;
         this.getClinicalFolderUseCase = getClinicalFolderUseCase;
         this.getMedicalRecordByPatientAndVersionNumberUseCase = getMedicalRecordByPatientAndVersionNumberUseCase;
     }
 
-    //lista de medical records de un paciente de forma desc (created_at) y datos del archivo medico
+    //lista de medical records de un paciente de forma desc (created_at) y datos del archivo medico 🆗
     @GET
     @Path("/medical-records/{patient-id}")
     public Response getClinicalFolderByPatient(@PathParam("patient-id") int patientId) {
@@ -53,7 +50,6 @@ public class ClinicalFolderController {
         }
 
         ClinicalFolderResponse dto = ClinicalFolderAssembler.toResponse(
-                patientId,
                 folder
         );
         return Response.ok(dto).build();
@@ -77,7 +73,9 @@ public class ClinicalFolderController {
         }
 
         return Response.ok(MedicalRecordDetailResponse.from(record)).build();
-
+        //SIGNATURE
+        //WALTER FIRMA A TU HIJO
+        //Bajada de Palanca
 
     }
 

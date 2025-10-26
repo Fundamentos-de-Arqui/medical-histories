@@ -11,14 +11,14 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 @ApplicationScoped
-public class CreateClinicalFolderService implements CreateClinicalFolderUseCase {
+public class ClinicalFolderCommandService implements CreateClinicalFolderUseCase {
 
     private final ClinicalFolderRepository repository;
     private final ClinicalFolderStatusRepository statusRepository;
 
     @Inject
-    public CreateClinicalFolderService(ClinicalFolderRepository repository,
-                                       ClinicalFolderStatusRepository statusRepository) {
+    public ClinicalFolderCommandService(ClinicalFolderRepository repository,
+                                        ClinicalFolderStatusRepository statusRepository) {
         this.repository = repository;
         this.statusRepository = statusRepository;
     }

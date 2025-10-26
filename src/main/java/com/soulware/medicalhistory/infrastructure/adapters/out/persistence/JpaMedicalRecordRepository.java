@@ -2,7 +2,6 @@ package com.soulware.medicalhistory.infrastructure.adapters.out.persistence;
 
 import com.soulware.medicalhistory.application.ports.out.MedicalRecordRepository;
 import com.soulware.medicalhistory.domain.model.aggregates.MedicalRecord;
-import com.soulware.medicalhistory.domain.queries.GetMedicalFolderByPatientIdQuery;
 import com.soulware.medicalhistory.domain.queries.GetMedicalRecordByPatientAndVersionNumberQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
@@ -47,27 +46,5 @@ public class JpaMedicalRecordRepository implements MedicalRecordRepository {
             return null;
         }
     }
-
-    @Override
-    public List<MedicalRecord> getMedicalFolderByPatientId(GetMedicalFolderByPatientIdQuery query) {
-
-        String jqpl = """
-        SELECT mr FROM MedicalRecord mr
-        JOIN FETCH mr.assessmentRecord
-        JOIN mr.clinicalFolder mh
-        WHERE mh.patientId = :patientId
-        """;
-
-        try {
-            return em.createQuery(jqpl, MedicalRecord.class)
-                    .setParameter("patientId", query.patientId())
-                    .getResultList();
-        }catch (NoResultException e) {
-            return null;
-        }
-
-    }
-
-
 
 }

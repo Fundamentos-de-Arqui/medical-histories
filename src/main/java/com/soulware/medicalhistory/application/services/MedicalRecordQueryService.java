@@ -1,28 +1,20 @@
 package com.soulware.medicalhistory.application.services;
 
-import com.soulware.medicalhistory.application.ports.in.GetClinicalFolderUseCase;
 import com.soulware.medicalhistory.application.ports.in.GetMedicalRecordByPatientAndVersionNumberUseCase;
-import com.soulware.medicalhistory.application.ports.out.ClinicalFolderRepository;
 import com.soulware.medicalhistory.application.ports.out.MedicalRecordRepository;
-import com.soulware.medicalhistory.domain.model.aggregates.ClinicalFolder;
 import com.soulware.medicalhistory.domain.model.aggregates.MedicalRecord;
-import com.soulware.medicalhistory.domain.model.valueobjects.ClinicalFolderId;
-import com.soulware.medicalhistory.domain.model.valueobjects.PatientId;
-import com.soulware.medicalhistory.domain.queries.GetMedicalFolderByPatientIdQuery;
 import com.soulware.medicalhistory.domain.queries.GetMedicalRecordByPatientAndVersionNumberQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
-import java.util.List;
-
 @ApplicationScoped
-public class GetMedicalRecordService implements GetMedicalRecordByPatientAndVersionNumberUseCase, GetClinicalFolderUseCase {
+public class MedicalRecordQueryService implements GetMedicalRecordByPatientAndVersionNumberUseCase {
 
     private final MedicalRecordRepository medicalRecordRepository;
 
     @Inject
-    public GetMedicalRecordService(MedicalRecordRepository medicalRecordRepository) {
+    public MedicalRecordQueryService(MedicalRecordRepository medicalRecordRepository) {
         this.medicalRecordRepository = medicalRecordRepository;
     }
     
@@ -31,14 +23,6 @@ public class GetMedicalRecordService implements GetMedicalRecordByPatientAndVers
     public MedicalRecord getMedicalRecordByPatientAndVersionNumber(GetMedicalRecordByPatientAndVersionNumberQuery query) {
         return medicalRecordRepository.findMedicalRecordByPatientAndVersionNumber(query);
     }
-
-
-    @Override
-    @Transactional
-    public List<MedicalRecord> getClinicalFolderByPatientId(GetMedicalFolderByPatientIdQuery query) {
-        return medicalRecordRepository.getMedicalFolderByPatientId(query);
-    }
-
 
 
 }

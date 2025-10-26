@@ -55,6 +55,7 @@ public class MedicalRecord {
         return new MedicalRecordId(id);
     }
 
+
     public Instant getCreatedAt() {
         return createdAt;
     }
@@ -66,5 +67,6 @@ public class MedicalRecord {
     public AssessmentRecord getAssessmentRecord() {
         return assessmentRecord;
     }
+
 
 }

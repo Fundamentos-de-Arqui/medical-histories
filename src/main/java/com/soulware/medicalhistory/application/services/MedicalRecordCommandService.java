@@ -15,14 +15,14 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 @ApplicationScoped
-public class CreateMedicalRecordService implements CreateMedicalRecordUseCase {
+public class MedicalRecordCommandService implements CreateMedicalRecordUseCase {
 
     private final ClinicalFolderRepository clinicalFolderRepository;
     private final MedicalRecordRepository medicalRecordRepository;
     private final AssessmentRecordRepository assessmentRecordRepository;
 
     @Inject
-    public CreateMedicalRecordService(ClinicalFolderRepository clinicalFolderRepository, MedicalRecordRepository medicalRecordRepository, AssessmentRecordRepository assessmentRecordRepository) {
+    public MedicalRecordCommandService(ClinicalFolderRepository clinicalFolderRepository, MedicalRecordRepository medicalRecordRepository, AssessmentRecordRepository assessmentRecordRepository) {
         this.clinicalFolderRepository = clinicalFolderRepository;
         this.medicalRecordRepository = medicalRecordRepository;
         this.assessmentRecordRepository = assessmentRecordRepository;

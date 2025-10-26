@@ -4,11 +4,14 @@ import com.soulware.medicalhistory.application.ports.out.ClinicalFolderRepositor
 import com.soulware.medicalhistory.domain.model.aggregates.ClinicalFolder;
 import com.soulware.medicalhistory.domain.model.valueobjects.ClinicalFolderId;
 import com.soulware.medicalhistory.domain.model.valueobjects.PatientId;
+import com.soulware.medicalhistory.domain.queries.GetMedicalFolderByPatientIdQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -47,6 +50,36 @@ public class JpaClinicalFolderRepository implements ClinicalFolderRepository {
                 .setParameter("pid", patientId.value())
                 .getResultStream()
                 .findFirst();
+    }
+
+    @Override
+    public ClinicalFolder getClinicalFolderByPatientId(GetMedicalFolderByPatientIdQuery query) {
+        // Paso 1: obtener la ClinicalFolder con sus MedicalRecords
+        String jpql1 = """
+        SELECT DISTINCT cf FROM ClinicalFolder cf
+        LEFT JOIN FETCH cf.status
+        LEFT JOIN FETCH cf.medicalRecords
+        WHERE cf.patientId = :patientId
+    """;
+
+        ClinicalFolder folder;
+        try {
+            folder = em.createQuery(jpql1, ClinicalFolder.class)
+                    .setParameter("patientId", query.patientId())
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+
+        // Paso 2: inicializar los AssessmentRecord asociados (Hibernate-level)
+        folder.getMedicalRecords().forEach(mr -> {
+            if (mr.getAssessmentRecord() != null) {
+                // fuerza la inicialización del proxy si aún no está cargado
+                mr.getAssessmentRecord().getDiagnostic();
+            }
+        });
+
+        return folder;
     }
 
 

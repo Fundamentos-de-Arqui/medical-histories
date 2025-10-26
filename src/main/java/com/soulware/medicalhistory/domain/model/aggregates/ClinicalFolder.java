@@ -29,6 +29,7 @@ public class ClinicalFolder {
     private List<Entry> entries = new ArrayList<>();
 
     @OneToMany(mappedBy = "clinicalFolder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("versionNumber DESC")
     private List<MedicalRecord> medicalRecords = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -76,6 +77,10 @@ public class ClinicalFolder {
 
     public List<Entry> getEntries() {
         return entries;
+    }
+
+    public List<MedicalRecord> getMedicalRecords() {
+        return medicalRecords;
     }
 
     public Instant getCreatedAt() {

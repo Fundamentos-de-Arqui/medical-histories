@@ -9,5 +9,5 @@ import com.soulware.medicalhistory.domain.queries.GetMedicalFolderByPatientIdQue
 import java.util.List;
 
 public interface GetClinicalFolderUseCase {
-    List<MedicalRecord> getClinicalFolderByPatientId(GetMedicalFolderByPatientIdQuery query);
+    ClinicalFolder getClinicalFolderByPatientId(GetMedicalFolderByPatientIdQuery query);
 }
