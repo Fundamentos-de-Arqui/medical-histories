@@ -8,8 +8,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
-import java.util.List;
-
 @ApplicationScoped
 public class JpaMedicalRecordRepository implements MedicalRecordRepository {
 

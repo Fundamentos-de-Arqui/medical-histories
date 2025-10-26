@@ -31,7 +31,7 @@ public class ClinicalFolderController {
     }
 
     @Inject
-    public ClinicalFolderController(CreateClinicalFolderUseCase createClinicalFolderUseCase, GetClinicalFolderUseCase getClinicalFolderUseCase, GetMedicalRecordByPatientAndVersionNumberUseCase getMedicalRecordByPatientAndVersionNumberUseCase) {
+    public ClinicalFolderController(GetClinicalFolderUseCase getClinicalFolderUseCase, GetMedicalRecordByPatientAndVersionNumberUseCase getMedicalRecordByPatientAndVersionNumberUseCase) {
         this.getClinicalFolderUseCase = getClinicalFolderUseCase;
         this.getMedicalRecordByPatientAndVersionNumberUseCase = getMedicalRecordByPatientAndVersionNumberUseCase;
     }
