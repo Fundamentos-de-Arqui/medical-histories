@@ -10,9 +10,9 @@
 
 
 
-        <class>com.soulware.medicalhistory.domain.model.aggregates.MedicalHistory</class>
+        <class>com.soulware.medicalhistory.domain.model.aggregates.ClinicalFolder</class>
         <class>com.soulware.medicalhistory.domain.model.aggregates.Entry</class>
-        <class>com.soulware.medicalhistory.domain.model.entities.MedicalHistoryStatus</class>
+        <class>com.soulware.medicalhistory.domain.model.entities.ClinicalFolderStatus</class>
 
         <properties>
             <!-- Hibernate/JPA -->
