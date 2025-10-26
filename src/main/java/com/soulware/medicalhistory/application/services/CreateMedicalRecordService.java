@@ -2,11 +2,11 @@ package com.soulware.medicalhistory.application.services;
 
 import com.soulware.medicalhistory.application.ports.in.CreateMedicalRecordUseCase;
 import com.soulware.medicalhistory.application.ports.out.AssessmentRecordRepository;
-import com.soulware.medicalhistory.application.ports.out.MedicalHistoryRepository;
+import com.soulware.medicalhistory.application.ports.out.ClinicalFolderRepository;
 import com.soulware.medicalhistory.application.ports.out.MedicalRecordRepository;
 import com.soulware.medicalhistory.application.results.CreatedMedicalRecordResult;
 import com.soulware.medicalhistory.domain.commands.CreateMedicalRecordCommand;
-import com.soulware.medicalhistory.domain.model.aggregates.MedicalHistory;
+import com.soulware.medicalhistory.domain.model.aggregates.ClinicalFolder;
 import com.soulware.medicalhistory.domain.model.aggregates.MedicalRecord;
 import com.soulware.medicalhistory.domain.model.entities.AssessmentRecord;
 import com.soulware.medicalhistory.domain.model.valueobjects.*;
@@ -17,13 +17,13 @@ import jakarta.transaction.Transactional;
 @ApplicationScoped
 public class CreateMedicalRecordService implements CreateMedicalRecordUseCase {
 
-    private final MedicalHistoryRepository medicalHistoryRepository;
+    private final ClinicalFolderRepository clinicalFolderRepository;
     private final MedicalRecordRepository medicalRecordRepository;
     private final AssessmentRecordRepository assessmentRecordRepository;
 
     @Inject
-    public CreateMedicalRecordService(MedicalHistoryRepository medicalHistoryRepository, MedicalRecordRepository medicalRecordRepository, AssessmentRecordRepository assessmentRecordRepository) {
-        this.medicalHistoryRepository = medicalHistoryRepository;
+    public CreateMedicalRecordService(ClinicalFolderRepository clinicalFolderRepository, MedicalRecordRepository medicalRecordRepository, AssessmentRecordRepository assessmentRecordRepository) {
+        this.clinicalFolderRepository = clinicalFolderRepository;
         this.medicalRecordRepository = medicalRecordRepository;
         this.assessmentRecordRepository = assessmentRecordRepository;
     }
@@ -32,7 +32,7 @@ public class CreateMedicalRecordService implements CreateMedicalRecordUseCase {
     @Transactional
     public CreatedMedicalRecordResult create(CreateMedicalRecordCommand command) {
 
-        var medicalHistoryId = new MedicalHistoryId(command.medicalHistoryId());
+        var medicalHistoryId = new ClinicalFolderId(command.clinicalFolderId());
         var diagnostic = new Diagnostic(command.diagnostic());
         var treatment = new Treatment(command.treatment());
         var description = new Description(command.description());
@@ -40,7 +40,7 @@ public class CreateMedicalRecordService implements CreateMedicalRecordUseCase {
         var assessmentType = AssessmentType.valueOf(command.assessmentType());
         var scheduledAt = new ScheduledAt(command.scheduledAt());
 
-        MedicalHistory history = medicalHistoryRepository.findById(medicalHistoryId).orElseThrow(()-> new RuntimeException("Medical history not found"));
+        ClinicalFolder history = clinicalFolderRepository.findById(medicalHistoryId).orElseThrow(()-> new RuntimeException("Medical history not found"));
 
         MedicalRecord medicalRecord = new MedicalRecord(history);
 

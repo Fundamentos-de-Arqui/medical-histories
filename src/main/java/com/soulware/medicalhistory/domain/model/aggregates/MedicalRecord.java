@@ -25,8 +25,8 @@ public class MedicalRecord {
     private Instant updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "medical_history_id")
-    private MedicalHistory medicalHistory;
+    @JoinColumn(name = "clinical_folder_id")
+    private ClinicalFolder clinicalFolder;
 
     @OneToOne(mappedBy = "medicalRecord", fetch = FetchType.LAZY)
     private AssessmentRecord assessmentRecord;
@@ -34,11 +34,11 @@ public class MedicalRecord {
 
     protected MedicalRecord() {}
 
-    public MedicalRecord(MedicalHistory medicalHistory) {
-        this.versionNumber = medicalHistory.getNextVersionNumber();
+    public MedicalRecord(ClinicalFolder clinicalFolder) {
+        this.versionNumber = clinicalFolder.getNextVersionNumber();
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
-        this.medicalHistory = medicalHistory;
+        this.clinicalFolder = clinicalFolder;
 
 
     }
@@ -59,8 +59,8 @@ public class MedicalRecord {
         return createdAt;
     }
 
-    public MedicalHistory getMedicalHistory() {
-        return medicalHistory;
+    public ClinicalFolder getClinicalFolder() {
+        return clinicalFolder;
     }
 
     public AssessmentRecord getAssessmentRecord() {

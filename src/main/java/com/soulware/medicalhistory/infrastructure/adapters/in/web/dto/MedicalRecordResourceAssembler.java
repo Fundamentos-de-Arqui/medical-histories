@@ -7,7 +7,7 @@ public class MedicalRecordResourceAssembler {
     public static MedicalRecordResponse toResource(MedicalRecord medicalRecord) {
         return new MedicalRecordResponse(
                 medicalRecord.getId().value(),
-                medicalRecord.getMedicalHistory().getId(),
+                medicalRecord.getClinicalFolder().getId(),
                 medicalRecord.getVersionNumber().version(),
                 medicalRecord.getCreatedAt()
         );

@@ -2,8 +2,6 @@ package com.soulware.medicalhistory.infrastructure.adapters.in.web;
 
 import com.soulware.medicalhistory.application.ports.in.CreateMedicalRecordUseCase;
 import com.soulware.medicalhistory.domain.commands.CreateMedicalRecordCommand;
-import com.soulware.medicalhistory.domain.model.aggregates.MedicalRecord;
-import com.soulware.medicalhistory.domain.model.valueobjects.MedicalHistoryId;
 import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.*;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -30,7 +28,7 @@ public class MedicalRecordController {
     @POST
     public Response createMedicalRecord(CreateMedicalRecordRequest request) {
         var command = new CreateMedicalRecordCommand(
-                request.medicalHistoryId(),
+                request.clinicalFolderId(),
                 request.diagnostic(),
                 request.treatment(),
                 request.description(),
@@ -49,13 +47,6 @@ public class MedicalRecordController {
 
         return Response.status(Response.Status.CREATED).entity(response).build();
 
-    }
-
-
-    @GET
-    @Path("/hello")
-    public Response helloWorld() {
-        return Response.ok("{\"message\":\"Hello World\"}").build();
     }
 
 }

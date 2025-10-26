@@ -30,7 +30,7 @@ public class JpaMedicalRecordRepository implements MedicalRecordRepository {
         String jpql = """
     SELECT mr FROM MedicalRecord mr
     JOIN FETCH mr.assessmentRecord
-    JOIN mr.medicalHistory mh
+    JOIN mr.clinicalFolder mh
     WHERE mh.patientId = :patientId
     AND mr.versionNumber = :versionNumber
     """;

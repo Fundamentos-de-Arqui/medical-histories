@@ -2,7 +2,7 @@ package com.soulware.medicalhistory.infrastructure.adapters.in.web.dto;
 
 import java.time.Instant;
 
-public record MedicalHistoryResponse(
+public record ClinicalFolderResponse(
         int id,
         int patientId,
         String status,

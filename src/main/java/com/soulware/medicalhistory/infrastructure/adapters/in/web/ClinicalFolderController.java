@@ -1,17 +1,15 @@
 package com.soulware.medicalhistory.infrastructure.adapters.in.web;
 
 
-import com.soulware.medicalhistory.application.ports.in.CreateMedicalHistoryUseCase;
-import com.soulware.medicalhistory.application.ports.in.GetMedicalHistoryUseCase;
+import com.soulware.medicalhistory.application.ports.in.CreateClinicalFolderUseCase;
+import com.soulware.medicalhistory.application.ports.in.GetClinicalFolderUseCase;
 import com.soulware.medicalhistory.application.ports.in.GetMedicalRecordByPatientAndVersionNumberUseCase;
-import com.soulware.medicalhistory.domain.model.aggregates.MedicalHistory;
-import com.soulware.medicalhistory.domain.model.aggregates.MedicalRecord;
-import com.soulware.medicalhistory.domain.model.valueobjects.MedicalHistoryId;
+import com.soulware.medicalhistory.domain.model.aggregates.ClinicalFolder;
 import com.soulware.medicalhistory.domain.model.valueobjects.PatientId;
 import com.soulware.medicalhistory.domain.queries.GetMedicalRecordByPatientAndVersionNumberQuery;
-import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.CreateMedicalHistoryRequest;
-import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.MedicalHistoryResourceAssembler;
-import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.MedicalHistoryResponse;
+import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.CreateClinicalFolderRequest;
+import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.ClinicalFolderResourceAssembler;
+import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.ClinicalFolderResponse;
 import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.MedicalRecordDetailResponse;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -19,38 +17,36 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.util.Optional;
 
-
-@Path("/medical-histories")
+@Path("/clinical-folders")
 @RequestScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class MedicalHistoryController {
+public class ClinicalFolderController {
 
-    private final CreateMedicalHistoryUseCase createMedicalHistoryUseCase;
-    private final GetMedicalHistoryUseCase getMedicalHistoryUseCase;
+    private final CreateClinicalFolderUseCase createClinicalFolderUseCase;
+    private final GetClinicalFolderUseCase getClinicalFolderUseCase;
     private final GetMedicalRecordByPatientAndVersionNumberUseCase getMedicalRecordByPatientAndVersionNumberUseCase;
 
-    public MedicalHistoryController( ) {
+    public ClinicalFolderController( ) {
         this.getMedicalRecordByPatientAndVersionNumberUseCase = null;
-        this.getMedicalHistoryUseCase = null;
-        this.createMedicalHistoryUseCase = null;
+        this.getClinicalFolderUseCase = null;
+        this.createClinicalFolderUseCase = null;
     }
 
     @Inject
-    public MedicalHistoryController(CreateMedicalHistoryUseCase createMedicalHistoryUseCase, GetMedicalHistoryUseCase getMedicalHistoryUseCase, GetMedicalRecordByPatientAndVersionNumberUseCase getMedicalRecordByPatientAndVersionNumberUseCase) {
-        this.createMedicalHistoryUseCase = createMedicalHistoryUseCase;
-        this.getMedicalHistoryUseCase = getMedicalHistoryUseCase;
+    public ClinicalFolderController(CreateClinicalFolderUseCase createClinicalFolderUseCase, GetClinicalFolderUseCase getClinicalFolderUseCase, GetMedicalRecordByPatientAndVersionNumberUseCase getMedicalRecordByPatientAndVersionNumberUseCase) {
+        this.createClinicalFolderUseCase = createClinicalFolderUseCase;
+        this.getClinicalFolderUseCase = getClinicalFolderUseCase;
         this.getMedicalRecordByPatientAndVersionNumberUseCase = getMedicalRecordByPatientAndVersionNumberUseCase;
     }
 
     //listener
     @POST
-    public Response createMedicalHistory(CreateMedicalHistoryRequest request) {
-        assert createMedicalHistoryUseCase != null;
-        MedicalHistory history = createMedicalHistoryUseCase.create(new PatientId(request.patientId()));
-        MedicalHistoryResponse response = MedicalHistoryResourceAssembler.toResource(history);
+    public Response createMedicalHistory(CreateClinicalFolderRequest request) {
+        assert createClinicalFolderUseCase != null;
+        ClinicalFolder history = createClinicalFolderUseCase.create(new PatientId(request.patientId()));
+        ClinicalFolderResponse response = ClinicalFolderResourceAssembler.toResource(history);
         return Response.status(Response.Status.CREATED).entity(response).build();
     }
 
@@ -58,9 +54,9 @@ public class MedicalHistoryController {
     @GET
     @Path("/medical-records/{patient-id}")
     public Response getMedicalHistoryByPatient(@PathParam("patient-id") int patientId) {
-        assert getMedicalHistoryUseCase != null;
-        MedicalHistory history = getMedicalHistoryUseCase.getByPatientId(new PatientId(patientId));
-        MedicalHistoryResponse response = MedicalHistoryResourceAssembler.toResource(history);
+        assert getClinicalFolderUseCase != null;
+        ClinicalFolder history = getClinicalFolderUseCase.getByPatientId(new PatientId(patientId));
+        ClinicalFolderResponse response = ClinicalFolderResourceAssembler.toResource(history);
         return Response.status(Response.Status.OK).entity(response).build();
     }
 

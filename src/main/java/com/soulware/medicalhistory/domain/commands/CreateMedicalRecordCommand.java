@@ -3,7 +3,7 @@ package com.soulware.medicalhistory.domain.commands;
 import java.time.LocalDateTime;
 
 public record CreateMedicalRecordCommand(
-        int medicalHistoryId,
+        int clinicalFolderId,
         String diagnostic,
         String treatment,
         String description,

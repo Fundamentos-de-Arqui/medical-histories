@@ -1,11 +1,11 @@
 package com.soulware.medicalhistory.infrastructure.adapters.in.web.dto;
 
-import com.soulware.medicalhistory.domain.model.aggregates.MedicalHistory;
+import com.soulware.medicalhistory.domain.model.aggregates.ClinicalFolder;
 
-public class MedicalHistoryResourceAssembler {
+public class ClinicalFolderResourceAssembler {
 
-    public static MedicalHistoryResponse toResource(MedicalHistory history) {
-        return new MedicalHistoryResponse(
+    public static ClinicalFolderResponse toResource(ClinicalFolder history) {
+        return new ClinicalFolderResponse(
                 history.getId(),
                 history.getPatientId(),
                 history.getStatus().getName(),

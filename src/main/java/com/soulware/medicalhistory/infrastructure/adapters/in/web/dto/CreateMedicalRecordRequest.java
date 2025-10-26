@@ -3,7 +3,7 @@ package com.soulware.medicalhistory.infrastructure.adapters.in.web.dto;
 import java.time.LocalDateTime;
 
 public record CreateMedicalRecordRequest(
-        int medicalHistoryId,
+        int clinicalFolderId,
         String diagnostic,
         String treatment,
         String description,
