@@ -1,4 +1,4 @@
-package com.soulware.medicalhistory.infrastructure.adapters.in.web.dto;
+package com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.responses;
 
 import com.soulware.medicalhistory.domain.model.aggregates.MedicalRecord;
 import com.soulware.medicalhistory.domain.model.entities.AssessmentRecord;
