@@ -2,8 +2,10 @@ package com.soulware.medicalhistory.infrastructure.adapters.out.persistence;
 
 import com.soulware.medicalhistory.application.ports.out.MedicalRecordRepository;
 import com.soulware.medicalhistory.domain.model.aggregates.MedicalRecord;
+import com.soulware.medicalhistory.domain.queries.GetMedicalRecordByPatientAndVersionNumberQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
 @ApplicationScoped
@@ -20,6 +22,26 @@ public class JpaMedicalRecordRepository implements MedicalRecordRepository {
         }
         else {
             em.merge(medicalRecord);
+        }
+    }
+
+    @Override
+    public MedicalRecord findMedicalRecordByPatientAndVersionNumber(GetMedicalRecordByPatientAndVersionNumberQuery query) {
+        String jpql = """
+    SELECT mr FROM MedicalRecord mr
+    JOIN FETCH mr.assessmentRecord
+    JOIN mr.medicalHistory mh
+    WHERE mh.patientId = :patientId
+    AND mr.versionNumber = :versionNumber
+    """;
+
+        try {
+            return em.createQuery(jpql, MedicalRecord.class)
+                    .setParameter("patientId", query.patient())
+                    .setParameter("versionNumber", query.versionNumber())
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
         }
     }
 

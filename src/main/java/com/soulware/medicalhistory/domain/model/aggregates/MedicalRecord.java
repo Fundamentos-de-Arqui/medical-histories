@@ -63,5 +63,8 @@ public class MedicalRecord {
         return medicalHistory;
     }
 
+    public AssessmentRecord getAssessmentRecord() {
+        return assessmentRecord;
+    }
 
 }

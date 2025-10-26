@@ -51,6 +51,7 @@ public class MedicalRecordController {
 
     }
 
+
     @GET
     @Path("/hello")
     public Response helloWorld() {
