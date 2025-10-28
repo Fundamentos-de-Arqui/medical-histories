@@ -9,4 +9,5 @@ import com.soulware.medicalhistory.domain.queries.GetMedicalRecordByPatientAndVe
 public interface MedicalRecordRepository {
     void save(MedicalRecord medicalRecord);
     MedicalRecord findMedicalRecordByPatientAndVersionNumber(GetMedicalRecordByPatientAndVersionNumberQuery query);
+    MedicalRecord findLatestMedicalRecordByPatient(int patientId);
 }

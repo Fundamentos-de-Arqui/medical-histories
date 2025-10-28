@@ -1,5 +1,6 @@
 package com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.responses;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.soulware.medicalhistory.domain.model.aggregates.MedicalRecord;
 import com.soulware.medicalhistory.domain.model.entities.AssessmentRecord;
 
@@ -14,8 +15,8 @@ public record MedicalRecordDetailResponse(
     String description,
     int therapistId,
     String assessmentType,
-        LocalDateTime scheduledAt,
-        Instant createdAt
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime scheduledAt,
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")Instant createdAt
 ) {
 
 public static MedicalRecordDetailResponse from(MedicalRecord record) {

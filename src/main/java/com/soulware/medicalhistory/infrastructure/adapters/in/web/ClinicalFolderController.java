@@ -1,12 +1,15 @@
 package com.soulware.medicalhistory.infrastructure.adapters.in.web;
 
 
-import com.soulware.medicalhistory.application.ports.in.CreateClinicalFolderUseCase;
+import com.soulware.medicalhistory.application.ports.in.GetAllClinicalFoldersUseCase;
 import com.soulware.medicalhistory.application.ports.in.GetClinicalFolderUseCase;
 import com.soulware.medicalhistory.application.ports.in.GetMedicalRecordByPatientAndVersionNumberUseCase;
-import com.soulware.medicalhistory.domain.queries.GetMedicalFolderByPatientIdQuery;
+import com.soulware.medicalhistory.domain.queries.GetClinicalFolderByPatientIdQuery;
+import com.soulware.medicalhistory.domain.queries.GetClinicalFoldersQuery;
 import com.soulware.medicalhistory.domain.queries.GetMedicalRecordByPatientAndVersionNumberQuery;
 import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.ClinicalFolderAssembler;
+import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.GetAllClinicalFolderAssembler;
+import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.requests.GetMedicalRecordByVersionNumberRequest;
 import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.responses.ClinicalFolderResponse;
 import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.responses.MedicalRecordDetailResponse;
 import jakarta.enterprise.context.RequestScoped;
@@ -24,26 +27,44 @@ public class ClinicalFolderController {
 
     private final GetClinicalFolderUseCase getClinicalFolderUseCase;
     private final GetMedicalRecordByPatientAndVersionNumberUseCase getMedicalRecordByPatientAndVersionNumberUseCase;
+    private final GetAllClinicalFoldersUseCase getAllClinicalFoldersUseCase;
 
     public ClinicalFolderController( ) {
         this.getMedicalRecordByPatientAndVersionNumberUseCase = null;
         this.getClinicalFolderUseCase = null;
+        this.getAllClinicalFoldersUseCase = null;
     }
 
     @Inject
-    public ClinicalFolderController(GetClinicalFolderUseCase getClinicalFolderUseCase, GetMedicalRecordByPatientAndVersionNumberUseCase getMedicalRecordByPatientAndVersionNumberUseCase) {
+    public ClinicalFolderController(GetClinicalFolderUseCase getClinicalFolderUseCase, GetMedicalRecordByPatientAndVersionNumberUseCase getMedicalRecordByPatientAndVersionNumberUseCase, GetAllClinicalFoldersUseCase getAllClinicalFoldersUseCase) {
         this.getClinicalFolderUseCase = getClinicalFolderUseCase;
         this.getMedicalRecordByPatientAndVersionNumberUseCase = getMedicalRecordByPatientAndVersionNumberUseCase;
+        this.getAllClinicalFoldersUseCase = getAllClinicalFoldersUseCase;
     }
 
-    //lista de medical records de un paciente de forma desc (created_at) y datos del archivo medico 🆗
+    @GET
+    @Path("/all/{status}")
+    public Response getAllClinicalFolders(@PathParam("status") String status) {
+        assert getAllClinicalFoldersUseCase != null;
+        var folders = getAllClinicalFoldersUseCase.getAllClinicalFolders(new GetClinicalFoldersQuery(status));
+        if (folders == null || folders.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        var response = folders.stream()
+                .map(GetAllClinicalFolderAssembler::fromDomain)
+                .toList();
+
+        return Response.ok(response).build();
+    }
+
     @GET
     @Path("/medical-records/{patient-id}")
     public Response getClinicalFolderByPatient(@PathParam("patient-id") int patientId) {
         assert getClinicalFolderUseCase != null;
 
         var folder = getClinicalFolderUseCase.getClinicalFolderByPatientId(
-                new GetMedicalFolderByPatientIdQuery(patientId)
+                new GetClinicalFolderByPatientIdQuery(patientId)
         );
         if (folder == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -56,16 +77,16 @@ public class ClinicalFolderController {
     }
 
 
-    //medical record de un paciente por version 🆗
     @GET
-    @Path("/medical-records/{patient-id}/{version-number}")
+    @Path("/medical-records/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getMedicalRecordByVersionNumber(@PathParam("patient-id") int patientId, @PathParam("version-number") int versionNumber){
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getMedicalRecordByVersionNumber(GetMedicalRecordByVersionNumberRequest request){
         assert getMedicalRecordByPatientAndVersionNumberUseCase != null;
 
         var record = getMedicalRecordByPatientAndVersionNumberUseCase
                 .getMedicalRecordByPatientAndVersionNumber(
-                        new GetMedicalRecordByPatientAndVersionNumberQuery(patientId, versionNumber)
+                        new GetMedicalRecordByPatientAndVersionNumberQuery(request.patientId(), request.versionNumber())
                 );
 
         if (record == null) {
@@ -73,10 +94,6 @@ public class ClinicalFolderController {
         }
 
         return Response.ok(MedicalRecordDetailResponse.from(record)).build();
-        //SIGNATURE
-        //WALTER FIRMA A TU HIJO
-        //Bajada de Palanca
 
     }
-
 }

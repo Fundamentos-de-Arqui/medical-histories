@@ -2,15 +2,18 @@ package com.soulware.medicalhistory.infrastructure.adapters.out.persistence;
 
 import com.soulware.medicalhistory.application.ports.out.ClinicalFolderRepository;
 import com.soulware.medicalhistory.domain.model.aggregates.ClinicalFolder;
+import com.soulware.medicalhistory.domain.model.aggregates.MedicalRecord;
 import com.soulware.medicalhistory.domain.model.valueobjects.ClinicalFolderId;
 import com.soulware.medicalhistory.domain.model.valueobjects.PatientId;
-import com.soulware.medicalhistory.domain.queries.GetMedicalFolderByPatientIdQuery;
+import com.soulware.medicalhistory.domain.queries.GetClinicalFolderByPatientIdQuery;
+import com.soulware.medicalhistory.domain.queries.GetClinicalFoldersQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -52,7 +55,7 @@ public class JpaClinicalFolderRepository implements ClinicalFolderRepository {
     }
 
     @Override
-    public ClinicalFolder getClinicalFolderByPatientId(GetMedicalFolderByPatientIdQuery query) {
+    public ClinicalFolder getClinicalFolderByPatientId(GetClinicalFolderByPatientIdQuery query) {
         // Paso 1: obtener la ClinicalFolder con sus MedicalRecords
         String jpql1 = """
         SELECT DISTINCT cf FROM ClinicalFolder cf
@@ -81,5 +84,45 @@ public class JpaClinicalFolderRepository implements ClinicalFolderRepository {
         return folder;
     }
 
+    private MedicalRecord loadFirstMedicalRecord(ClinicalFolder folder) {
+        String jpql = """
+        SELECT mr FROM MedicalRecord mr
+        JOIN FETCH mr.assessmentRecord
+        WHERE mr.clinicalFolder = :folder
+        ORDER BY mr.versionNumber ASC
+    """;
+
+        return em.createQuery(jpql, MedicalRecord.class)
+                .setParameter("folder", folder)
+                .setMaxResults(1)
+                .getResultStream()
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public List<ClinicalFolder> getAllClinicalFolders(GetClinicalFoldersQuery query) {
+        // Paso 1: obtener todos los folders por estado
+        String jpql = """
+        SELECT cf FROM ClinicalFolder cf
+        LEFT JOIN FETCH cf.status
+        WHERE cf.status.name = :status
+    """;
+
+        List<ClinicalFolder> folders = em.createQuery(jpql, ClinicalFolder.class)
+                .setParameter("status", query.status())
+                .getResultList();
+
+        // Paso 2: cargar el primer MedicalRecord (versión más antigua) con su AssessmentRecord
+        folders.forEach(folder -> {
+            MedicalRecord firstRecord = loadFirstMedicalRecord(folder);
+            folder.getMedicalRecords().clear(); // mantenemos la lista administrada
+            if (firstRecord != null) {
+                folder.getMedicalRecords().add(firstRecord);
+            }
+        });
+
+        return folders;
+    }
 
 }
