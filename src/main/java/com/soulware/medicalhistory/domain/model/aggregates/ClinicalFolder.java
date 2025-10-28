@@ -18,7 +18,7 @@ public class ClinicalFolder {
     @Column(name = "clinical_folder_id")
     private int id;
 
-    @Column(name = "patient_id", nullable = false)
+    @Column(name = "patient_id", nullable = false, unique = true)
     private int patientId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
