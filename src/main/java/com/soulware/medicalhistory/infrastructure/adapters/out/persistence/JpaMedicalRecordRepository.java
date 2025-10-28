@@ -45,4 +45,24 @@ public class JpaMedicalRecordRepository implements MedicalRecordRepository {
         }
     }
 
+    @Override
+    public MedicalRecord findLatestMedicalRecordByPatient(int patientId) {
+        String jpql = """
+        SELECT mr FROM MedicalRecord mr
+        JOIN FETCH mr.assessmentRecord
+        JOIN mr.clinicalFolder mh
+        WHERE mh.patientId = :patientId
+        ORDER BY mr.versionNumber DESC
+    """;
+
+
+        try {
+            return em.createQuery(jpql, MedicalRecord.class)
+                    .setParameter("patientId", patientId)
+                    .setMaxResults(1)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 }
