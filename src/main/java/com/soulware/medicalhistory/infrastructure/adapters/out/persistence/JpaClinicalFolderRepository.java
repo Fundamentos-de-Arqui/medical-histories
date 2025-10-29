@@ -22,6 +22,11 @@ public class JpaClinicalFolderRepository implements ClinicalFolderRepository {
     @PersistenceContext
     private EntityManager em;
 
+    //Only for testing
+    public JpaClinicalFolderRepository(EntityManager em) {
+        this.em = em;
+    }
+
     @Override
     public void save(ClinicalFolder clinicalFolder) {
         if (clinicalFolder.getId() == 0) {

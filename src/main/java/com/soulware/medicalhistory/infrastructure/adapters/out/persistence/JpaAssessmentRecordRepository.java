@@ -12,6 +12,11 @@ public class JpaAssessmentRecordRepository implements AssessmentRecordRepository
     @PersistenceContext
     private EntityManager em;
 
+    //Only for testing
+    public JpaAssessmentRecordRepository(EntityManager em) {
+        this.em = em;
+    }
+
     @Override
     public void save(AssessmentRecord record) {
         if (record.getId().id() == 0) {

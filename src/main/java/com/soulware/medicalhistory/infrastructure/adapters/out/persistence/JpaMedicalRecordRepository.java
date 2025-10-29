@@ -14,6 +14,11 @@ public class JpaMedicalRecordRepository implements MedicalRecordRepository {
     @PersistenceContext
     private EntityManager em;
 
+    //Only for testing
+    public JpaMedicalRecordRepository(EntityManager em) {
+        this.em = em;
+    }
+
     @Override
     public void save(MedicalRecord medicalRecord) {
         if (medicalRecord.getId().value() == 0) {
