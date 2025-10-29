@@ -24,9 +24,9 @@ class MedicalRecordCommandServiceIntegrationTest {
     private static EntityManagerFactory emf;
     private EntityManager em;
 
-    private ClinicalFolderRepository clinicalFolderRepository;
-    private MedicalRecordRepository medicalRecordRepository;
-    private AssessmentRecordRepository assessmentRecordRepository;
+    private JpaClinicalFolderRepository clinicalFolderRepository;
+    private JpaMedicalRecordRepository medicalRecordRepository;
+    private JpaAssessmentRecordRepository assessmentRecordRepository;
 
     private MedicalRecordCommandService medicalRecordCommandService;
 

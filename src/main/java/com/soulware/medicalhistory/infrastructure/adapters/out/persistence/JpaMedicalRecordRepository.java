@@ -4,6 +4,7 @@ import com.soulware.medicalhistory.application.ports.out.MedicalRecordRepository
 import com.soulware.medicalhistory.domain.model.aggregates.MedicalRecord;
 import com.soulware.medicalhistory.domain.queries.GetMedicalRecordByPatientAndVersionNumberQuery;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
@@ -15,6 +16,7 @@ public class JpaMedicalRecordRepository implements MedicalRecordRepository {
     private EntityManager em;
 
     //Only for testing
+    @Inject
     public JpaMedicalRecordRepository(EntityManager em) {
         this.em = em;
     }

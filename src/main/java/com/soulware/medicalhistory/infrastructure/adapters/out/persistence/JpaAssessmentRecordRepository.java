@@ -3,6 +3,7 @@ package com.soulware.medicalhistory.infrastructure.adapters.out.persistence;
 import com.soulware.medicalhistory.application.ports.out.AssessmentRecordRepository;
 import com.soulware.medicalhistory.domain.model.entities.AssessmentRecord;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
@@ -13,6 +14,7 @@ public class JpaAssessmentRecordRepository implements AssessmentRecordRepository
     private EntityManager em;
 
     //Only for testing
+    @Inject
     public JpaAssessmentRecordRepository(EntityManager em) {
         this.em = em;
     }

@@ -8,6 +8,7 @@ import com.soulware.medicalhistory.domain.model.valueobjects.PatientId;
 import com.soulware.medicalhistory.domain.queries.GetClinicalFolderByPatientIdQuery;
 import com.soulware.medicalhistory.domain.queries.GetClinicalFoldersQuery;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
@@ -23,6 +24,7 @@ public class JpaClinicalFolderRepository implements ClinicalFolderRepository {
     private EntityManager em;
 
     //Only for testing
+    @Inject
     public JpaClinicalFolderRepository(EntityManager em) {
         this.em = em;
     }
