@@ -10,8 +10,10 @@ import com.soulware.medicalhistory.domain.queries.GetMedicalRecordByPatientAndVe
 import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.ClinicalFolderAssembler;
 import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.GetAllClinicalFolderAssembler;
 import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.requests.GetMedicalRecordByVersionNumberRequest;
+import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.requests.GetPagedAllClinicalFoldersRequest;
 import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.responses.ClinicalFolderResponse;
 import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.responses.MedicalRecordDetailResponse;
+import com.soulware.medicalhistory.infrastructure.adapters.in.web.dto.responses.PagedClinicalFoldersResponse;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -43,17 +45,22 @@ public class ClinicalFolderController {
     }
 
     @GET
-    @Path("/all/{status}")
-    public Response getAllClinicalFolders(@PathParam("status") String status) {
+    @Path("/all/")
+    public Response getAllClinicalFolders(GetPagedAllClinicalFoldersRequest request) {
         assert getAllClinicalFoldersUseCase != null;
-        var folders = getAllClinicalFoldersUseCase.getAllClinicalFolders(new GetClinicalFoldersQuery(status));
-        if (folders == null || folders.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+        var result = getAllClinicalFoldersUseCase.getAllClinicalFolders(new GetClinicalFoldersQuery(request.page(), request.size(), request.status()));
 
-        var response = folders.stream()
+        var folderResponses = result.folders().stream()
                 .map(GetAllClinicalFolderAssembler::fromDomain)
                 .toList();
+
+        var response = new PagedClinicalFoldersResponse(
+                folderResponses,
+                result.totalPages(),
+                result.totalElements(),
+                result.currentPage(),
+                result.pageSize()
+        );
 
         return Response.ok(response).build();
     }

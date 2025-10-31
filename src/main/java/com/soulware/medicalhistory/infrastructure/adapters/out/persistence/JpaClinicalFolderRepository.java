@@ -102,21 +102,22 @@ public class JpaClinicalFolderRepository implements ClinicalFolderRepository {
 
     @Override
     public List<ClinicalFolder> getAllClinicalFolders(GetClinicalFoldersQuery query) {
-        // Paso 1: obtener todos los folders por estado
         String jpql = """
         SELECT cf FROM ClinicalFolder cf
         LEFT JOIN FETCH cf.status
         WHERE cf.status.name = :status
+        ORDER BY cf.id
     """;
 
         List<ClinicalFolder> folders = em.createQuery(jpql, ClinicalFolder.class)
                 .setParameter("status", query.status())
+                .setFirstResult(query.page() * query.size())
+                .setMaxResults(query.size())
                 .getResultList();
 
-        // Paso 2: cargar el primer MedicalRecord (versión más antigua) con su AssessmentRecord
         folders.forEach(folder -> {
             MedicalRecord firstRecord = loadFirstMedicalRecord(folder);
-            folder.getMedicalRecords().clear(); // mantenemos la lista administrada
+            folder.getMedicalRecords().clear();
             if (firstRecord != null) {
                 folder.getMedicalRecords().add(firstRecord);
             }
@@ -124,5 +125,16 @@ public class JpaClinicalFolderRepository implements ClinicalFolderRepository {
 
         return folders;
     }
+
+    @Override
+    public long countByStatus(String status) {
+        return em.createQuery("""
+        SELECT COUNT(cf) FROM ClinicalFolder cf
+        WHERE cf.status.name = :status
+    """, Long.class)
+                .setParameter("status", status)
+                .getSingleResult();
+    }
+
 
 }

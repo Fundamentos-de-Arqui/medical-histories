@@ -15,5 +15,6 @@ public interface ClinicalFolderRepository {
     Optional<ClinicalFolder> findByPatientId(PatientId patientId);
     ClinicalFolder getClinicalFolderByPatientId(GetClinicalFolderByPatientIdQuery query);
     List<ClinicalFolder> getAllClinicalFolders(GetClinicalFoldersQuery query);
+    long countByStatus(String status);
 }
 

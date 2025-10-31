@@ -3,6 +3,7 @@ package com.soulware.medicalhistory.application.services;
 import com.soulware.medicalhistory.application.ports.in.GetAllClinicalFoldersUseCase;
 import com.soulware.medicalhistory.application.ports.in.GetClinicalFolderUseCase;
 import com.soulware.medicalhistory.application.ports.out.ClinicalFolderRepository;
+import com.soulware.medicalhistory.application.results.PagedClinicalFoldersResult;
 import com.soulware.medicalhistory.domain.model.aggregates.ClinicalFolder;
 import com.soulware.medicalhistory.domain.model.valueobjects.ClinicalFolderStatus;
 import com.soulware.medicalhistory.domain.queries.GetClinicalFolderByPatientIdQuery;
@@ -31,7 +32,7 @@ public class ClinicalFolderQueryService implements GetClinicalFolderUseCase, Get
 
     @Override
     @Transactional
-    public List<ClinicalFolder> getAllClinicalFolders(GetClinicalFoldersQuery query) {
+    public PagedClinicalFoldersResult getAllClinicalFolders(GetClinicalFoldersQuery query) {
 
         var statusOpt = ClinicalFolderStatus.fromString(query.status());
 
@@ -39,7 +40,16 @@ public class ClinicalFolderQueryService implements GetClinicalFolderUseCase, Get
             throw new IllegalArgumentException("Invalid status value: " + query.status());
         }
 
-        var status = statusOpt.get();
-        return clinicalFolderRepository.getAllClinicalFolders(query);
+        var folders = clinicalFolderRepository.getAllClinicalFolders(query);
+        long totalElements = clinicalFolderRepository.countByStatus(query.status());
+        int totalPages = (int) Math.ceil((double) totalElements / query.size());
+
+        return new PagedClinicalFoldersResult(
+                folders,
+                totalElements,
+                totalPages,
+                query.page(),
+                query.size()
+        );
     }
 }
