@@ -21,8 +21,11 @@ public class MedicalRecordQueryService implements GetMedicalRecordByPatientAndVe
     @Override
     @Transactional
     public MedicalRecord getMedicalRecordByPatientAndVersionNumber(GetMedicalRecordByPatientAndVersionNumberQuery query) {
+        if (query.versionNumber() == null) {
+            return medicalRecordRepository.findLatestMedicalRecordByPatient(query.patient());
+        }
+
         return medicalRecordRepository.findMedicalRecordByPatientAndVersionNumber(query);
     }
-
 
 }

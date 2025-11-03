@@ -8,6 +8,7 @@ import com.soulware.medicalhistory.domain.model.entities.ClinicalFolderStatus;
 import com.soulware.medicalhistory.domain.model.valueobjects.PatientId;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @ApplicationScoped
@@ -26,6 +27,9 @@ public class ClinicalFolderCommandService implements CreateClinicalFolderUseCase
     @Override
     @Transactional
     public ClinicalFolder create(PatientId patientId) {
+        //v erifica si ya hay un folder relacionado a un paciente
+        repository.findByPatientId(patientId).orElseThrow(()-> new EntityNotFoundException("clinical folder with patient id " + patientId + " not found"));
+
         ClinicalFolderStatus activeStatus = statusRepository
                 .findByName("ACTIVE")
                 .orElseThrow(() -> new IllegalStateException("ACTIVE status not found"));
