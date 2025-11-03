@@ -100,7 +100,7 @@ public class ClinicalFolderController {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        return Response.ok(MedicalRecordDetailResponse.from(record)).build();
+        return Response.ok(MedicalRecordDetailResponse.from(record, request.patientId())).build();
 
     }
 }

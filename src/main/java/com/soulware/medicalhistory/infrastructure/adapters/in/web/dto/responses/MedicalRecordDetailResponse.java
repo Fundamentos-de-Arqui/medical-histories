@@ -14,12 +14,13 @@ public record MedicalRecordDetailResponse(
     String treatment,
     String description,
     int therapistId,
+    int patientId,
     String assessmentType,
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime scheduledAt,
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")Instant createdAt
 ) {
 
-public static MedicalRecordDetailResponse from(MedicalRecord record) {
+public static MedicalRecordDetailResponse from(MedicalRecord record, int patientId) {
     AssessmentRecord assessment = record.getAssessmentRecord();
 
     return new MedicalRecordDetailResponse(
@@ -29,6 +30,7 @@ public static MedicalRecordDetailResponse from(MedicalRecord record) {
             assessment.getTreatment().treatment(),
             assessment.getDescription().description(),
             assessment.getTherapistId().value(),
+            patientId,
             assessment.getAssessmentType().name(),
             assessment.getScheduledAt().scheduledAt(),
             assessment.getCreatedAt()
